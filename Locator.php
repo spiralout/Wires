@@ -132,8 +132,8 @@ class Wires_Locator implements Wires_Locator_Interface
 	 */
 	function bindInstance($abstract, $instance, $context = self::GLOBAL_CONTEXT, $overwrite = false)
    {
-		if (!$overwrite && isset($this->singletons[$context][$abstract])) {
-			throw new Wires_Exception_AlreadyBound($abstract, 'an instance', $context, $this->singletons[$context][$abstract]);
+		if (!$overwrite && isset($this->instances[$context][$abstract])) {
+			throw new Wires_Exception_AlreadyBound($abstract, 'an instance', $context, 'another instance');
 		}
 
 		$this->singletons[$context][$abstract] = get_class($instance);
@@ -143,7 +143,7 @@ class Wires_Locator implements Wires_Locator_Interface
 	}
 
 	/**
-	 * Get the name of the class bound to $abstract. Looks in non-singleton bindings first
+	 * Get the name of the class bound to $abstract. Looks in singleton bindings first
 	 * then singleton bindings
 	 * 
 	 * @param string $abstract
@@ -152,36 +152,15 @@ class Wires_Locator implements Wires_Locator_Interface
 	 */
 	function getBinding($abstract, $context = self::GLOBAL_CONTEXT)
    {
-		if (isset($this->bindings[$context][$abstract])) {	
+   	if (isset($this->singletons[$context][$abstract])) {	
+			return $this->singletons[$context][$abstract];
+		}
+		
+   	if (isset($this->bindings[$context][$abstract])) {	
 			return $this->bindings[$context][$abstract];
 		}
 
-		if (isset($this->singletons[$context][$abstract])) {	
-			return $this->singletons[$context][$abstract];
-		}
-
 		return false;
-	}
-
-	/**
-	 * Gets a singleton instance of a concrete class bound to an interface. The injector will create the singleton
-	 * instance if one does not already exist.
-	 *
-	 * @param string $abstract
-	 * @return mixed
-	 */
-	function getSingleton($abstract, $context = self::GLOBAL_CONTEXT)
-   {
-		if (!($this->boundSingleton($abstract, $context))) {	
-			throw new Wires_Exception_NotBound($abstract, $context);
-		}
-
-		if (!isset($this->instances[$context][$abstract])) {	
-			$class = $this->singletons[$context][$abstract];
-			$this->instances[$context][$abstract] = new $class();
-		}
-
-		return $this->instances[$context][$abstract];
 	}
 
 	/**
@@ -217,7 +196,7 @@ class Wires_Locator implements Wires_Locator_Interface
    }
 
    /**
-	 * Gets a new instance of a bound class. This method does NOT inject dependencies
+	 * Gets an instance of a bound class
 	 *
 	 * @param string $abstract
 	 * @param string $context
@@ -225,16 +204,11 @@ class Wires_Locator implements Wires_Locator_Interface
 	 */
 	function getInstance($abstract, $context = self::GLOBAL_CONTEXT)
    {	
-		if (!($this->bound($abstract, $context))) {
+		if (!isset($this->instances[$context][$abstract])) {
 			throw new Wires_Exception_NotBound($abstract, $context);
 		}
 
-		if (isset($this->singletons[$context][$abstract])) {
-			return $this->getSingleton($abstract, $context);
-		} else {
-			$class = $this->bindings[$context][$abstract];
-			return new $class();
-		}
+		return $this->instances[$context][$abstract];
 	}
 
 	/**
@@ -259,6 +233,18 @@ class Wires_Locator implements Wires_Locator_Interface
 	function boundSingleton($abstract, $context = self::GLOBAL_CONTEXT)
    {
 		return (isset($this->singletons[$context][$abstract]));
+	}
+	
+	/**
+	 * Checks whether an abstract interface is bound to an instance
+	 *
+	 * @param string $abstract
+	 * @param string $context
+	 * @return boolean
+	 */
+	function boundInstance($abstract, $context = self::GLOBAL_CONTEXT)
+   {
+		return (isset($this->instances[$context][$abstract]));
 	}
 
 	/**

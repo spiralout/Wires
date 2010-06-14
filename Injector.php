@@ -116,9 +116,21 @@ class Wires_Injector implements Wires_Injector_Interface
 		$contexts = $this->getContexts($context);
 
 		foreach ($contexts as $context) {	
+			
 			// first check for bound singleton
-			if ($this->locator->boundSingleton($class, $context))	{	
-				return $this->locator->getInstance($class, $context);
+			if ($this->locator->boundSingleton($class, $context))	{
+				
+				// if singleton already instantiated grab ref to it
+				if ($this->locator->boundInstance($class, $context)) {
+					$obj = $this->locator->getInstance($class, $context);
+					
+				// otherwise instantiate singleton					
+				} else {
+					$obj = $this->create($this->locator->getBinding($class, $context), $context);
+					$this->locator->bindInstance($class, $obj, $context);
+				}
+				
+				return $obj;
 			}
 
 			// get bound class
