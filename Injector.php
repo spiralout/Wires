@@ -1,9 +1,10 @@
 <?php
 require_once dirname(__FILE__) .'/Injector/Interface.php';
 require_once dirname(__FILE__) .'/Locator/Interface.php';
+require_once dirname(__FILE__) .'/Exception/NotBound.php';
 
 /**
- * Dependency Injector
+ * Wires Dependency Injector
  * Instantiates objects, injecting dependencies using the Wires_Locator
  *
  */
@@ -29,7 +30,7 @@ class Wires_Injector implements Wires_Injector_Interface
 	function create($class, $context = Wires_Locator_Interface::GLOBAL_CONTEXT)
    {
 		if (!($obj = $this->getBinding($class, $context)))	{
-			throw new Exception("Class $class is not bound in context $context");
+			throw new Wires_Exception_NotBound($class, $context);
 		} elseif (is_object($obj)) {
 			return $obj;
 		}
@@ -54,7 +55,7 @@ class Wires_Injector implements Wires_Injector_Interface
     * Create a new injector with additional bindings (overriding previously defined ones)
     *
     * @param  $bindings array
-    * @return Injector
+    * @return Wires_Injector
     */
    function with(array $bindings)
    {
@@ -168,6 +169,13 @@ class Wires_Injector implements Wires_Injector_Interface
 		return false;
 	}
 
+	/**
+	 * Get a bound class by name in the context hierarchy starting at $context
+	 *
+	 * @param string $name
+	 * @param string $context
+	 * @return mixed
+	 */
    private function getBoundClass($name, $context = Wires_Locator_Interface::GLOBAL_CONTEXT)
    {
       $contexts = $this->getContexts($context);
@@ -183,10 +191,10 @@ class Wires_Injector implements Wires_Injector_Interface
    }
 
    /**
-    * Get a value for each construct argument for $ref_class
+    * Get a value for each constructor param for $ref_class
     *
-    * @param  $params array
-    * @param  $ref_class string
+    * @param array $params
+    * @param string $ref_class 
     * @return array
     */
    private function getConstructorArgs($params, $ref_class)

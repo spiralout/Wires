@@ -5,8 +5,7 @@ require_once dirname(__FILE__) .'/Exception/InvalidBinding.php';
 require_once dirname(__FILE__) .'/Exception/NotBound.php';
 
 /**
- * Service Locator implementation
- *
+ * Locator to maintain dependency binding definitions
  */
 class Wires_Locator implements Wires_Locator_Interface
 {
@@ -26,6 +25,7 @@ class Wires_Locator implements Wires_Locator_Interface
 	 * Load an array of binding definitions
 	 * 
 	 * @param array $bindings
+	 * @param boolean $overwrite
 	 */
 	function loadBindings(array $bindings, $overwrite = false)
    {	
@@ -54,6 +54,7 @@ class Wires_Locator implements Wires_Locator_Interface
 	 * @param string $abstract
 	 * @param string $concrete
 	 * @param string $context
+	 * @param boolean $overwrite
 	 * @return Wires_Locator
 	 */
 	function bind($abstract, $concrete, $context = self::GLOBAL_CONTEXT, $overwrite = false)
@@ -73,7 +74,8 @@ class Wires_Locator implements Wires_Locator_Interface
     * @param string $name
     * @param string $class
     * @param string $context
-    * @param bool $overwrite
+    * @param boolean $overwrite
+	 * @return Wires_Locator
     */
    function bindClass($name, $class, $context = self::GLOBAL_CONTEXT, $overwrite = false)
    {
@@ -82,6 +84,8 @@ class Wires_Locator implements Wires_Locator_Interface
       }
 
       $this->classes[$context][$name] = $class;
+
+		return $this;
    }
 
 	/**
