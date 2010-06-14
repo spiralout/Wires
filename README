@@ -1,0 +1,136 @@
+Wires is a PHP 5 library for doing dependency injection. Wires currently does 
+constructor injection only. To learn all about inversion of control and 
+dependency injection, have a look here:
+
+http://martinfowler.com/articles/injection.html
+
+
+ABOUT
+~~~~~
+Wires contains two main classes, the Injector and the Locator. The Locator is
+responsible for defining what classes or objects should be instantiated where
+and the Injector is responsible for building the objects. The two work in
+concert to let you define dependencies and instantiate object graphs based on
+those definitions.
+
+Dependency definitions consist of a context, which is a class or interface
+name, and a list of bindings. These bindings define how to instantiate the
+constructor parameters of an object in that context. The contexts are 
+hierarchical, so a binding defined in the context of an interface will apply
+to all objects that implement that interface and similarly with abstract 
+and base classes. There is also a global context that applies to all objects,
+but the most specific context will always win out.
+
+There are four different ways in which dependencies can be defined in the 
+Locator:
+  
+    * Binding an interface or abstract class to a concrete class. This method 
+      works with type-hinted parameters
+
+    * Binding a parameter name to a class. This will instantiate a new object 
+      of the class and assign it to that parameter. If that object has it's own
+      dependencies, they will be filled in also and so on down the tree
+
+    * Binding a parameter to a class as a singleton. This will instantiate a 
+      single instance of the class and use it for every object in the context
+      instead of instantiating a new one for each object created.
+
+    * Binding a value to a parameter. This is a way to assign a value to a 
+      parameter by name. It can be any value including primitives.
+
+
+USAGE
+~~~~~
+The easiest way to create an instance of the Injector is to use the static 
+method in the Wires class.
+
+$injector = Wires::getInjector($bindings);
+
+Here, $bindings is an array of binding definitions as described above. The 
+structure of this array will be explained in the next section. After creating
+the injector, you can then instantiate a class using the create() method.
+
+$object = $injector->create('MyClassInterface');
+
+A common usage pattern is to have an array of bindings that are always defined
+for an application, but occasionally need to add additional bindings or 
+overwrite ones that are already defined. In this case you can use the with()
+method.
+
+$object2 = $injector->with($other_bindings)->create('MyClassInterface');
+
+
+BINDING DEFINITIONS
+~~~~~~~~~~~~~~~~~~~
+The structure of the $bindings array is a multi-level associative array. The 
+first level is the name of the context. This can be an interface name, class
+name or the global context which is named "_global". Under each context is 
+another associative array where the keys are either a type-hint or a parameter
+name. Here are some examples of each of the four definition types.
+
+* Type Hinted
+  array(
+      '_global' => array(
+          'MyClassInterface' => 'MyConcreteClass'));
+
+* Parameter Name to Class
+  array(
+      '_global' => array(
+          'param' => array('class' => 'MyConcreteClass')));
+
+* Parameter Name to Singleton
+  array(
+      'OtherContext' => array(
+          'param1' => array('asSingleton' => true, 'class' => 'MyConcreteClass')));
+
+* Parameter Name to Value
+  array(
+      'OtherContext' => array(
+          'param2' => array('value' => 1234)));
+
+* All together
+  array(
+     '_global' => array(
+         'MyClassInterface' => 'MyConcreteClass',
+         'param' => array('class' => 'MyConcreteClass')),
+     'OtherContext' => array(
+         'param1' => array('asSingleton' => true, 'class' => 'MyConcreteClass'),
+         'param2' => array('value' => 1234)));
+
+
+EXAMPLES
+~~~~~~~~
+See the included examples in the docs/examples directory.
+
+
+LINKS
+~~~~~
+GitHub: http://github.com/spiralout/Wires
+
+
+LICENSE
+~~~~~~~
+Copyright (c) 2010, Sean Crystal <seancrystal@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the <organization> nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
