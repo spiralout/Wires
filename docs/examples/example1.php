@@ -12,7 +12,7 @@ $bindings = array(
 	'ExampleBase' => array(
 		'a' => array('class' => 'stdClass')),
 	'Example' => array(
-		'b' => array('asValue' => true, 'value' => 42)));
+		'b' => array('value' => 42)));
 
 
 abstract class ExampleBase
@@ -36,6 +36,7 @@ class Example extends ExampleBase
 $i = Wires::getInjector($bindings);
 
 $ex = $i->create('ExampleBase');
+assert('$ex instanceof Example');
 assert('$ex->a instanceof stdClass');
 assert('$ex->b == 42');
 

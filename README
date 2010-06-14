@@ -48,7 +48,9 @@ $injector = Wires::getInjector($bindings);
 
 Here, $bindings is an array of binding definitions as described above. The 
 structure of this array will be explained in the next section. After creating
-the injector, you can then instantiate a class using the create() method.
+the injector, you can then instantiate a class using the create() method. You
+can pass to the create() method the name of a concrete class or an interface or 
+abstract class that has a concrete implementation defined in the global context.
 
 $object = $injector->create('MyClassInterface');
 
