@@ -25,18 +25,20 @@ There are four different ways in which dependencies can be defined in the
 Locator:
   
     * Binding an interface or abstract class to a concrete class. This method 
-      works with type-hinted parameters
+	   works with type-hinted parameters. If the concrete class has it's own 
+		dependencies, they will be filled in as well and so on down the hierarchy 
+
+    * Binding an interface or abstract class to a singleton. Like the previous
+	   option, this one works with type-hinted parameters. It will instantiate a 
+		single instance of the concrete class to use for every parameter of the 
+		abstract type in the context
 
     * Binding a parameter name to a class. This will instantiate a new object 
       of the class and assign it to that parameter. If that object has it's own
       dependencies, they will be filled in also and so on down the tree
 
-    * Binding a parameter to a class as a singleton. This will instantiate a 
-      single instance of the class and use it for every object in the context
-      instead of instantiating a new one for each object created.
-
     * Binding a value to a parameter. This is a way to assign a value to a 
-      parameter by name. It can be any value including primitives.
+      parameter by name. It can be any value including primitives
 
 
 USAGE
@@ -75,15 +77,15 @@ name. Here are some examples of each of the four definition types.
       '_global' => array(
           'MyClassInterface' => 'MyConcreteClass'));
 
+* Type Hinted to Singleton
+  array(
+      'OtherContext' => array(
+          'MyClassInterface' => array('asSingleton' => true, 'class' => 'MyConcreteClass')));
+
 * Parameter Name to Class
   array(
       '_global' => array(
           'param' => array('class' => 'MyConcreteClass')));
-
-* Parameter Name to Singleton
-  array(
-      'OtherContext' => array(
-          'param1' => array('asSingleton' => true, 'class' => 'MyConcreteClass')));
 
 * Parameter Name to Value
   array(
@@ -96,7 +98,7 @@ name. Here are some examples of each of the four definition types.
          'MyClassInterface' => 'MyConcreteClass',
          'param' => array('class' => 'MyConcreteClass')),
      'OtherContext' => array(
-         'param1' => array('asSingleton' => true, 'class' => 'MyConcreteClass'),
+         'MyClassInterface' => array('asSingleton' => true, 'class' => 'MyConcreteClass'),
          'param2' => array('value' => 1234)));
 
 
