@@ -76,6 +76,7 @@ $i = Wires::getInjector($bindings);
 
 $five = $i->create('AbstractFive');
 
+assert('$five instanceof Five');
 assert('$five->three instanceof Three');
 assert('$five->three->two_a->one instanceof FirstOne');
 assert('$five->three->two_a instanceof Two');
