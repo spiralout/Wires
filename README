@@ -25,13 +25,13 @@ There are four different ways in which dependencies can be defined in the
 Locator:
   
     * Binding an interface or abstract class to a concrete class. This method 
-	   works with type-hinted parameters. If the concrete class has it's own 
-		dependencies, they will be filled in as well and so on down the hierarchy 
+      works with type-hinted parameters. If the concrete class has it's own 
+      dependencies, they will be filled in as well and so on down the hierarchy 
 
     * Binding an interface or abstract class to a singleton. Like the previous
-	   option, this one works with type-hinted parameters. It will instantiate a 
-		single instance of the concrete class to use for every parameter of the 
-		abstract type in the context
+      option, this one works with type-hinted parameters. It will instantiate a 
+      single instance of the concrete class to use for every parameter of the 
+      abstract type in the context
 
     * Binding a parameter name to a class. This will instantiate a new object 
       of the class and assign it to that parameter. If that object has it's own
