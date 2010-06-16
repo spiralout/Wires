@@ -7,20 +7,20 @@
 require_once dirname(__FILE__) .'/../../Wires.php';
 
 $bindings = array(
-	'_global' => array(
-		'OneInterface' => 'FirstOne',
-		'AbstractFive' => 'Five',
-		'ReallyAbstractThree' => 'AbstractThree'),
-	'Three' => array(
-		'AbstractTwo' => array('asSingleton' => true, 'class' => 'Two')),
-	'FourInterface' => array(
-		'OneInterface' => 'SecondOne'),
-	'AbstractFive' => array(
-		'three' => array('class' => 'ReallyAbstractThree')),
-	'Five' => array(
-		'AbstractThree' => 'Three',
-		'FourInterface' => 'Four')
-);
+      '_global' => array(
+         'OneInterface' => 'FirstOne',
+         'AbstractFive' => 'Five',
+         'ReallyAbstractThree' => 'AbstractThree'),
+      'Three' => array(
+         'AbstractTwo' => array('asSingleton' => true, 'class' => 'Two')),
+      'FourInterface' => array(
+         'OneInterface' => 'SecondOne'),
+      'AbstractFive' => array(
+         'three' => array('class' => 'ReallyAbstractThree')),
+      'Five' => array(
+         'AbstractThree' => 'Three',
+         'FourInterface' => 'Four')
+      );
 
 interface OneInterface {}
 class FirstOne implements OneInterface {}
@@ -29,47 +29,47 @@ class SecondOne implements OneInterface {}
 abstract class AbstractTwo {}
 class Two extends AbstractTwo 
 {
-	function __construct(OneInterface $one)
-	{
-		$this->one = $one;
-	}
+   function __construct(OneInterface $one)
+   {
+      $this->one = $one;
+   }
 }
 
 abstract class ReallyAbstractThree {}
 abstract class AbstractThree extends ReallyAbstractThree {}
 class Three extends AbstractThree
 {
-	function __construct(AbstractTwo $two_a, AbstractTwo $two_b)
-	{
-		$this->two_a = $two_a;
-		$this->two_b = $two_b;
-	}
+   function __construct(AbstractTwo $two_a, AbstractTwo $two_b)
+   {
+      $this->two_a = $two_a;
+      $this->two_b = $two_b;
+   }
 }
 
 interface FourInterface {}
 class Four implements FourInterface
 {
-	function __construct(OneInterface $one)
-	{
-		$this->one = $one;
-	}
+   function __construct(OneInterface $one)
+   {
+      $this->one = $one;
+   }
 }
 
 abstract class AbstractFive
 {
-	function __construct($three)
-	{
-		$this->three = $three;
-	}
+   function __construct($three)
+   {
+      $this->three = $three;
+   }
 }
 
 class Five extends AbstractFive
 {
-	function __construct($three, FourInterface $four)
-	{
-		parent::__construct($three);
-		$this->four = $four;
-	}
+   function __construct($three, FourInterface $four)
+   {
+      parent::__construct($three);
+      $this->four = $four;
+   }
 }
 
 $i = Wires::getInjector($bindings);

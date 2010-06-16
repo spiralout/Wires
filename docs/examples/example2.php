@@ -7,12 +7,12 @@
 require_once dirname(__FILE__) .'/../../Wires.php';
 
 $bindings = array(
-	'_global' => array(
-		'MyInterface' => 'MyClass'));
+      '_global' => array(
+         'MyInterface' => 'MyClass'));
 
 $alt_bindings = array(
-	'_global' => array(
-		'MyInterface' => 'MyOtherClass'));
+      '_global' => array(
+         'MyInterface' => 'MyOtherClass'));
 
 interface MyInterface {}
 
@@ -22,10 +22,10 @@ class MyOtherClass implements MyInterface {}
 
 class MyFavoriteClass
 {
-	function __construct(MyInterface $a)
-	{
-		$this->a = $a;
-	}
+   function __construct(MyInterface $a)
+   {
+      $this->a = $a;
+   }
 }
 
 
